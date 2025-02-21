@@ -47,7 +47,7 @@ const ProductList: React.FC = () => {
   }));
 
   // API URL for fetching products
-  const apiUrl = "https://fakestoreapi.com/products?limit=10";
+  const apiUrl = "https://cors-anywhere.herokuapp.com/https://fakestoreapi.com/products?limit=10";
 
   // useEffect hook to fetch products when the component mounts
   useEffect(() => {
