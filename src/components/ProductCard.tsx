@@ -74,7 +74,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           cursor: "pointer",
         }}
       >
-        <CardMedia component="img" height="300" image={product.image} />
+        <CardMedia component="img"   sx={{ width: "69%", margin: "0 auto", height: "261px", objectFit: "contain" }} image={product.image} />
         <CardContent sx={{ flexGrow: 1 }}>
           <Typography gutterBottom variant="h6" component="div">
             {product.title}

@@ -48,15 +48,24 @@ const ProductDetails: React.FC = () => {
 
   return (
     <Container maxWidth="md">
-      <Button onClick={handleBackClick} style={{ marginTop: "20px" }}>
+      <Button
+        onClick={() => navigate("/products")}
+        sx={{ marginBottom: "50px" }}
+        color="primary"
+        type="submit"
+        variant="contained"
+      >
         Back to Products
       </Button>
       <Card sx={{ marginTop: 2 }}>
         <CardMedia
           component="img"
           alt={product.title}
-          height="300"
           image={product.image}
+          sx={{
+            margin: "0 auto",
+            width: "40%",
+          }}
         />
         <CardContent>
           <Typography gutterBottom variant="h5" component="div">
