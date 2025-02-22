@@ -58,7 +58,8 @@ const initialState: ProductState = {
 };
 
 // Async Thunk for fetching products
-const apiUrl = "https://cors-anywhere.herokuapp.com/https://fakestoreapi.com/products?limit=10";
+export const apiUrl = import.meta.env.VITE_API_URL;
+
 export const fetchProducts = createAsyncThunk<Product[], string>(
   "products/fetchProducts",
   async (apiUrl) => {

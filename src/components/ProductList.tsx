@@ -20,6 +20,7 @@ import {
   fetchProducts,
   setCurrentPage,
   setSelectedCategories,
+  apiUrl,
 } from "../features/productSlice";
 import { SelectChangeEvent } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -45,9 +46,6 @@ const ProductList: React.FC = () => {
     currentPage: state.products.currentPage,
     productsPerPage: state.products.productsPerPage,
   }));
-
-  // API URL for fetching products
-  const apiUrl = "https://cors-anywhere.herokuapp.com/https://fakestoreapi.com/products?limit=10";
 
   // useEffect hook to fetch products when the component mounts
   useEffect(() => {

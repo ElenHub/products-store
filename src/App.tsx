@@ -8,7 +8,7 @@ import EditProductForm from "./components/EditProductForm";
 
 function App() {
   return (
-    <Router>
+    <Router basename="/products-store">
       <Container maxWidth="lg">
         <Box sx={{ my: 4 }}></Box>
         <Routes>
