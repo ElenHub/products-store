@@ -17,7 +17,7 @@ import { useNavigate } from "react-router-dom";
 import { Product } from "../types/types";
 import { truncateText } from "../utils/truncateText";
 import { useAppDispatch } from "../hooks";
-import { toggleLike, deleteProduct } from "../features/productSlice";
+import { toggleLike, deleteProductThunk } from "../features/productSlice";
 import ConfirmationDialog from "./ConfiramtionDialog";
 
 interface ProductCardProps {
@@ -53,7 +53,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
   // Function to confirm the deletion of a product
   const handleDeleteConfirmed = () => {
-    dispatch(deleteProduct(product.id));
+    dispatch(deleteProductThunk(product.id));
     setOpenConfirmDelete(false);
   };
 
@@ -74,7 +74,17 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           cursor: "pointer",
         }}
       >
-        <CardMedia component="img"   sx={{ width: "69%", margin: "0 auto", height: "261px", objectFit: "contain", marginBottom:"18px" }} image={product.image} />
+        <CardMedia
+          component="img"
+          sx={{
+            width: "69%",
+            margin: "0 auto",
+            height: "261px",
+            objectFit: "contain",
+            marginBottom: "18px",
+          }}
+          image={product.image}
+        />
         <CardContent sx={{ flexGrow: 1 }}>
           <Typography gutterBottom variant="h6" component="div">
             {product.title}
@@ -83,7 +93,10 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             {truncateText(product.description, 100)}
           </Typography>
         </CardContent>
-        <CardActions disableSpacing sx={{ justifyContent: "space-between",    marginBottom: "12px",  }}>
+        <CardActions
+          disableSpacing
+          sx={{ justifyContent: "space-between", marginBottom: "12px" }}
+        >
           <IconButton aria-label="add to favorites" onClick={handleLikeClick}>
             {product.isLiked ? (
               <FavoriteIcon color="error" />

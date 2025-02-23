@@ -7,11 +7,11 @@ import {
   Alert,
   FormControl,
   InputLabel,
-  Select,
   MenuItem,
+  Select,
 } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "../hooks";
-import { updateProduct } from "../features/productSlice";
+import { editProductThunk } from "../features/productSlice";
 import { Product } from "../types/types";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -29,7 +29,7 @@ const EditProductForm: React.FC = () => {
 
   // useEffect hook to load product data when the component mounts or when the product ID changes
   useEffect(() => {
-    if (!id) return; // If there is no id, exit the effect.
+    if (!id) return;
     const foundProduct = products.find((p) => p.id === Number(id));
     if (foundProduct) {
       setProduct(foundProduct);
@@ -39,13 +39,7 @@ const EditProductForm: React.FC = () => {
       setImage(foundProduct.image);
       setError("");
     } else {
-      // If the product isn't found in the products array
       setError("Product not found.");
-      setProduct(null);
-      setTitle("");
-      setDescription("");
-      setCategory("");
-      setImage("");
     }
   }, [id, products]);
 
@@ -74,7 +68,7 @@ const EditProductForm: React.FC = () => {
       image,
     };
 
-    dispatch(updateProduct(updatedProduct));
+    dispatch(editProductThunk(updatedProduct));
     navigate("/products");
   };
 
@@ -137,6 +131,7 @@ const EditProductForm: React.FC = () => {
         <FormControl fullWidth margin="normal" required>
           <InputLabel id="category-label">Category</InputLabel>
           <Select
+            label="Category"
             labelId="category-label"
             id="category"
             value={category}

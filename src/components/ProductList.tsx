@@ -17,12 +17,10 @@ import { useAppDispatch, useAppSelector } from "../hooks";
 import {
   setFilter,
   setSearchTerm,
-  fetchProducts,
+  fetchProductsThunk,
   setCurrentPage,
   setSelectedCategories,
-  apiUrl,
 } from "../features/productSlice";
-import { SelectChangeEvent } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
 
 const ProductList: React.FC = () => {
@@ -36,53 +34,16 @@ const ProductList: React.FC = () => {
     error,
     currentPage,
     productsPerPage,
-  } = useAppSelector((state) => ({
-    filteredProducts: state.products.filteredProducts,
-    filter: state.products.filter,
-    selectedCategories: state.products.selectedCategories,
-    searchTerm: state.products.searchTerm,
-    status: state.products.status,
-    error: state.products.error,
-    currentPage: state.products.currentPage,
-    productsPerPage: state.products.productsPerPage,
-  }));
+  } = useAppSelector((state) => state.products);
 
-  // useEffect hook to fetch products when the component mounts
+  // Effect to fetch products when the component mounts
   useEffect(() => {
-    if (status === "idle" && filteredProducts.length === 0) {
-      dispatch(fetchProducts(apiUrl));
+    if (status === "idle") {
+      dispatch(fetchProductsThunk());
     }
-  }, [dispatch, apiUrl, filteredProducts.length, status]);
+  }, [dispatch, status]);
 
-  // Handler for filter changes (all or liked)
-  const handleFilterChange = (event: SelectChangeEvent<"all" | "liked">) => {
-    dispatch(setFilter(event.target.value as "all" | "liked"));
-  };
-
-  // Handler for category changes
-  const handleCategoryChange = (event: SelectChangeEvent<string[]>) => {
-    const value = event.target.value as string[];
-    if (value.includes("all")) {
-      dispatch(setSelectedCategories([]));
-    } else {
-      dispatch(setSelectedCategories(value));
-    }
-  };
-
-  // Handler for search input changes
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    dispatch(setSearchTerm(event.target.value));
-  };
-
-  // Handler for pagination changes
-  const handlePageChange = (
-    event: React.ChangeEvent<unknown>,
-    value: number
-  ) => {
-    dispatch(setCurrentPage(value));
-  };
-
-  // Render loading state
+  // Show loading indicator while products are being fetched
   if (status === "loading") {
     return (
       <Container
@@ -98,25 +59,46 @@ const ProductList: React.FC = () => {
     );
   }
 
-  // Render error state
+  // Show error message if fetching failed
   if (status === "failed") {
     return <Typography color="error">Error: {error}</Typography>;
   }
 
-  // Calculate the start and end indices for pagination
+  // Handle category selection change
+  const handleCategoryChange = (event: SelectChangeEvent<string>) => {
+    const value = event.target.value;
+    if (value === "all") {
+      dispatch(setSelectedCategories([])); // Clear selected categories if "All" is selected
+    } else {
+      dispatch(setSelectedCategories([value])); // Set selected category
+    }
+    dispatch(setCurrentPage(1));
+  };
+
+  const handleFilterChange = (event: SelectChangeEvent<string>) => {
+    const value = event.target.value as "all" | "liked";
+    dispatch(setFilter(value));
+    dispatch(setCurrentPage(1));
+  };
+
+  // Calculate indexes for current page products
   const startIndex = (currentPage - 1) * productsPerPage;
   const endIndex = startIndex + productsPerPage;
-  const currentProducts = filteredProducts.slice(startIndex, endIndex);
-  const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
+  const currentProducts = Array.isArray(filteredProducts)
+    ? filteredProducts.slice(startIndex, endIndex)
+    : [];
+  const totalPages = Math.ceil(
+    (Array.isArray(filteredProducts) ? filteredProducts.length : 0) /
+      productsPerPage
+  );
 
-  // Render the product list
   return (
     <Container maxWidth="lg">
       <Typography variant="h4" component="h1" gutterBottom>
         Product List
       </Typography>
 
-      {/* Filter Select */}
+      {/* Filter select */}
       <FormControl sx={{ m: 1, minWidth: 120 }}>
         <InputLabel id="filter-label">Filter</InputLabel>
         <Select
@@ -131,14 +113,17 @@ const ProductList: React.FC = () => {
         </Select>
       </FormControl>
 
-      {/* Category Select */}
+      {/* Category select */}
       <FormControl sx={{ m: 1, width: 300, marginBottom: "30px" }}>
         <InputLabel id="category-label">Category</InputLabel>
         <Select
           labelId="category-label"
           id="category"
           onChange={handleCategoryChange}
-          value={selectedCategories}
+          value={
+            selectedCategories.length === 0 ? "all" : selectedCategories[0]
+          }
+          label="Category"
         >
           <MenuItem value="all">All</MenuItem>
           <MenuItem value="jewelery">Jewelery</MenuItem>
@@ -147,17 +132,19 @@ const ProductList: React.FC = () => {
         </Select>
       </FormControl>
 
-      {/* Search Input */}
+      {/* Search text field */}
       <TextField
         label="Search"
         variant="outlined"
         value={searchTerm}
-        onChange={handleSearchChange}
+        onChange={(e) => {
+          dispatch(setSearchTerm(e.target.value));
+          dispatch(setCurrentPage(1));
+        }}
         sx={{ m: 1, width: 300 }}
       />
 
-      {/* Product Grid */}
-      <Grid container spacing={3}>
+      <Grid container spacing={3} sx={{ marginTop: "30px" }}>
         {currentProducts.map((product) => (
           <Grid item xs={12} sm={6} md={4} key={product.id}>
             <ProductCard product={product} />
@@ -165,19 +152,19 @@ const ProductList: React.FC = () => {
         ))}
       </Grid>
 
-      {/* Pagination */}
+      {/* Pagination for product list */}
       {totalPages > 1 && (
         <Pagination
           count={totalPages}
           page={currentPage}
-          onChange={handlePageChange}
+          onChange={(e, value) => dispatch(setCurrentPage(value))}
           sx={{ mt: 2, display: "flex", justifyContent: "center" }}
         />
       )}
 
-      {/* Create Product Button */}
+      {/* Link to create a new product */}
       <Link to="/create-product">
-        <Button variant="outlined" color="primary">
+        <Button variant="outlined" color="primary" sx={{ marginTop: "30px" }}>
           Create Product
         </Button>
       </Link>

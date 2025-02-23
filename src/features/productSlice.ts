@@ -1,36 +1,31 @@
 import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
 import { Product } from "../types/types";
-import axios from "axios";
+import * as productApi from "../api/product-api";
 
-// Helper function to filter products
+// Function for filtering products
 function filterProducts(
   products: Product[],
   filter: "all" | "liked",
   searchTerm: string,
   selectedCategories: string[]
 ): Product[] {
-  let filtered = products.filter((product: Product) => {
-    if (filter === "liked") {
-      return product.isLiked;
-    }
-    return true;
+  return products.filter((product) => {
+    const matchesSearchTerm = product.title
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
+    const matchesCategory =
+      selectedCategories.length === 0 ||
+      selectedCategories.includes(product.category);
+
+    return (
+      (filter === "all" || (filter === "liked" && product.isLiked)) &&
+      matchesSearchTerm &&
+      matchesCategory
+    );
   });
-
-  if (searchTerm) {
-    filtered = filtered.filter((product) =>
-      product.title.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-  }
-
-  if (selectedCategories.length > 0) {
-    filtered = filtered.filter((product) =>
-      selectedCategories.includes(product.category)
-    );
-  }
-
-  return filtered;
 }
 
+// Initial state structure
 interface ProductState {
   products: Product[];
   filteredProducts: Product[];
@@ -41,7 +36,6 @@ interface ProductState {
   error: string | null;
   currentPage: number;
   productsPerPage: number;
-  currentProduct: Product | null;
 }
 
 const initialState: ProductState = {
@@ -54,78 +48,41 @@ const initialState: ProductState = {
   error: null,
   currentPage: 1,
   productsPerPage: 6,
-  currentProduct: null,
 };
 
-// Async Thunk for fetching products
-export const apiUrl = import.meta.env.VITE_API_URL;
-
-export const fetchProducts = createAsyncThunk<Product[], string>(
+// Thunks for async operations
+export const fetchProductsThunk = createAsyncThunk<Product[]>(
   "products/fetchProducts",
-  async (apiUrl) => {
-    try {
-      const response = await fetch(apiUrl);
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-      return await response.json();
-    } catch (error: any) {
-      throw new Error(error.message || "Failed to fetch products.");
-    }
+  productApi.fetchProducts
+);
+
+export const fetchCategoriesThunk = createAsyncThunk(
+  "products/fetchCategories",
+  productApi.fetchCategories
+);
+
+export const addProductThunk = createAsyncThunk<Product, Product>(
+  "products/addProduct",
+  async (newProduct: Product) => {
+    const response = await productApi.addProduct(newProduct);
+    return response;
   }
 );
 
-// Async Thunk for editing a product
-export const editProduct = createAsyncThunk<Product, Product>(
+export const deleteProductThunk = createAsyncThunk<void, string>(
+  "products/deleteProduct",
+  productApi.deleteProduct
+);
+export const editProductThunk = createAsyncThunk<Product, Product>(
   "products/editProduct",
-  async (product) => {
-    try {
-      const response = await axios.put(
-        `https://fakestoreapi.com/products/${product.id}`,
-        product
-      );
-      return response.data;
-    } catch (error: any) {
-      throw new Error(error.message || "Failed to update product.");
-    }
-  }
+  productApi.editProduct
 );
 
 const productSlice = createSlice({
   name: "products",
   initialState,
   reducers: {
-    addProduct: (state, action: PayloadAction<Product>) => {
-      state.products.push(action.payload);
-      state.filteredProducts = filterProducts(
-        state.products,
-        state.filter,
-        state.searchTerm,
-        state.selectedCategories
-      );
-    },
-    deleteProduct: (state, action: PayloadAction<number>) => {
-      state.products = state.products.filter((p) => p.id !== action.payload);
-      state.filteredProducts = filterProducts(
-        state.products,
-        state.filter,
-        state.searchTerm,
-        state.selectedCategories
-      );
-    },
-    updateProduct: (state, action: PayloadAction<Product>) => {
-      const index = state.products.findIndex((p) => p.id === action.payload.id);
-      if (index !== -1) {
-        state.products[index] = action.payload;
-        state.filteredProducts = filterProducts(
-          state.products,
-          state.filter,
-          state.searchTerm,
-          state.selectedCategories
-        );
-      }
-    },
-    toggleLike: (state, action: PayloadAction<number>) => {
+    toggleLike(state, action: PayloadAction<number>) {
       const product = state.products.find((p) => p.id === action.payload);
       if (product) {
         product.isLiked = !product.isLiked;
@@ -137,7 +94,7 @@ const productSlice = createSlice({
         state.selectedCategories
       );
     },
-    setFilter: (state, action: PayloadAction<"all" | "liked">) => {
+    setFilter(state, action: PayloadAction<"all" | "liked">) {
       state.filter = action.payload;
       state.filteredProducts = filterProducts(
         state.products,
@@ -146,16 +103,7 @@ const productSlice = createSlice({
         state.selectedCategories
       );
     },
-    setSelectedCategories: (state, action: PayloadAction<string[]>) => {
-      state.selectedCategories = action.payload;
-      state.filteredProducts = filterProducts(
-        state.products,
-        state.filter,
-        state.searchTerm,
-        state.selectedCategories
-      );
-    },
-    setSearchTerm: (state, action: PayloadAction<string>) => {
+    setSearchTerm(state, action: PayloadAction<string>) {
       state.searchTerm = action.payload;
       state.filteredProducts = filterProducts(
         state.products,
@@ -164,16 +112,26 @@ const productSlice = createSlice({
         state.selectedCategories
       );
     },
-    setCurrentPage: (state, action: PayloadAction<number>) => {
+    setCurrentPage(state, action: PayloadAction<number>) {
       state.currentPage = action.payload;
+    },
+    setSelectedCategories(state, action: PayloadAction<string[]>) {
+      state.selectedCategories = action.payload;
+      state.filteredProducts = filterProducts(
+        state.products,
+        state.filter,
+        state.searchTerm,
+        state.selectedCategories
+      );
     },
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchProducts.pending, (state) => {
+      .addCase(fetchProductsThunk.pending, (state) => {
         state.status = "loading";
+        state.error = null;
       })
-      .addCase(fetchProducts.fulfilled, (state, action) => {
+      .addCase(fetchProductsThunk.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.products = action.payload;
         state.filteredProducts = filterProducts(
@@ -181,49 +139,53 @@ const productSlice = createSlice({
           state.filter,
           state.searchTerm,
           state.selectedCategories
-        ); // Apply filters after fetching
+        );
       })
-      .addCase(fetchProducts.rejected, (state, action) => {
+      .addCase(fetchProductsThunk.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message || "Failed to fetch products.";
       })
-      .addCase(editProduct.pending, (state) => {
-        // Use editProduct here
-        state.status = "loading";
-      })
-      .addCase(editProduct.fulfilled, (state, action) => {
-        // Use editProduct here
-        state.status = "succeeded";
-        const updatedProduct = action.payload;
-        const index = state.products.findIndex(
-          (p) => p.id === updatedProduct.id
-        );
-        if (index !== -1) {
-          state.products[index] = updatedProduct;
-        }
+      .addCase(addProductThunk.fulfilled, (state, action) => {
+        console.log("Product added to Redux store:", action.payload);
+        state.products.push(action.payload);
         state.filteredProducts = filterProducts(
           state.products,
           state.filter,
           state.searchTerm,
           state.selectedCategories
-        ); // Apply filters after edit
+        );
       })
-      .addCase(editProduct.rejected, (state, action) => {
-        // Use editProduct here
-        state.status = "failed";
-        state.error = action.error.message || "Failed to update product.";
+      .addCase(editProductThunk.fulfilled, (state, action) => {
+        const index = state.products.findIndex(
+          (p) => p.id === action.payload.id
+        );
+        if (index !== -1) {
+          state.products[index] = action.payload;
+          state.filteredProducts = filterProducts(
+            state.products,
+            state.filter,
+            state.searchTerm,
+            state.selectedCategories
+          );
+        }
+      })
+      .addCase(deleteProductThunk.fulfilled, (state, action) => {
+        state.products = state.products.filter((p) => p.id !== action.meta.arg);
+        state.filteredProducts = filterProducts(
+          state.products,
+          state.filter,
+          state.searchTerm,
+          state.selectedCategories
+        );
       });
   },
 });
 
 export const {
-  addProduct,
-  deleteProduct,
-  updateProduct,
   toggleLike,
   setFilter,
-  setSelectedCategories,
   setSearchTerm,
   setCurrentPage,
+  setSelectedCategories,
 } = productSlice.actions;
 export default productSlice.reducer;

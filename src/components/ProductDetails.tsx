@@ -60,7 +60,6 @@ const ProductDetails: React.FC = () => {
       <Card sx={{ marginTop: 2 }}>
         <CardMedia
           component="img"
-          alt={product.title}
           image={product.image}
           sx={{
             margin: "0 auto",

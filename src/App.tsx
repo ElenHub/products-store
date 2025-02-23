@@ -1,6 +1,5 @@
-import React from "react";
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-import { Container, Typography, Box, Button } from "@mui/material";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Container, Box } from "@mui/material";
 import ProductList from "./components/ProductList";
 import ProductDetails from "./components/ProductDetails";
 import CreateProductForm from "./components/CreateProductForm";

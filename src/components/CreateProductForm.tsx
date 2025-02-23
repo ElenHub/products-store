@@ -3,7 +3,6 @@ import {
   TextField,
   Button,
   Container,
-  Typography,
   Alert,
   FormControl,
   InputLabel,
@@ -12,9 +11,10 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { useAppDispatch } from "../hooks";
-import { addProduct } from "../features/productSlice";
+import { addProductThunk } from "../features/productSlice";
 import { Product } from "../types/types";
 import { useNavigate } from "react-router-dom";
+import { v4 as uuid } from "uuid";
 
 const CreateProductForm: React.FC = () => {
   const [title, setTitle] = useState("");
@@ -41,6 +41,7 @@ const CreateProductForm: React.FC = () => {
     }
 
     setLoading(true);
+    setError("");
 
     try {
       const newProduct: Product = {
@@ -51,8 +52,7 @@ const CreateProductForm: React.FC = () => {
         image,
         isLiked: false,
       };
-
-      await dispatch(addProduct(newProduct));
+      await dispatch(addProductThunk(newProduct));
       navigate("/products");
     } catch (err) {
       setError("An error occurred when creating the product.");
@@ -121,6 +121,7 @@ const CreateProductForm: React.FC = () => {
         <FormControl fullWidth margin="normal" required>
           <InputLabel id="category-label">Category</InputLabel>
           <Select
+            label="Category"
             labelId="category-label"
             id="category"
             value={category}
@@ -129,9 +130,9 @@ const CreateProductForm: React.FC = () => {
             error={!category.trim() && error !== ""}
           >
             <MenuItem value="">Select a category</MenuItem>
-            <MenuItem value="jewelry">Jewelry</MenuItem>
-            <MenuItem value="mens clothing">mens clothing</MenuItem>
-            <MenuItem value="electronics">electronics</MenuItem>
+            <MenuItem value="jewelery">Jewelery</MenuItem>
+            <MenuItem value="men's clothing">Men's Clothing</MenuItem>
+            <MenuItem value="electronics">Electronics</MenuItem>
           </Select>
         </FormControl>
 
