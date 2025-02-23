@@ -14,7 +14,6 @@ import { useAppDispatch } from "../hooks";
 import { addProductThunk } from "../features/productSlice";
 import { Product } from "../types/types";
 import { useNavigate } from "react-router-dom";
-import { v4 as uuid } from "uuid";
 
 const CreateProductForm: React.FC = () => {
   const [title, setTitle] = useState("");
