@@ -1,4 +1,4 @@
-import { HashRouter  as Router, Routes, Route } from "react-router-dom";
+import { HashRouter as Router, Routes, Route } from "react-router-dom";
 import { Container, Box } from "@mui/material";
 import ProductList from "./components/ProductList";
 import ProductDetails from "./components/ProductDetails";
@@ -12,6 +12,7 @@ function App() {
       <Container maxWidth="lg">
         <Box sx={{ my: 4 }}></Box>
         <Routes>
+          <Route path="/" element={<ProductList />} />
           <Route path="/products" element={<ProductList />} />
           <Route path="/products/:id" element={<ProductDetails />} />
           <Route path="/create-product" element={<CreateProductForm />} />
