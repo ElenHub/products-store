@@ -12,7 +12,6 @@ function App() {
       <Container maxWidth="lg">
         <Box sx={{ my: 4 }}></Box>
         <Routes>
-          <Route path="/" element={<ProductList />} />
           <Route path="/products" element={<ProductList />} />
           <Route path="/products/:id" element={<ProductDetails />} />
           <Route path="/create-product" element={<CreateProductForm />} />
