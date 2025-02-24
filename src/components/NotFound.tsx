@@ -17,7 +17,7 @@ const NotFound = () => {
       <Typography variant="h4" gutterBottom>
         404: Page not found
       </Typography>
-      <Typography variant="body1" gutterBottom>
+      <Typography variant="body1" gutterBottom sx={{marginBottom:"20px", marginTop:'30px'}}>
         Unfortunately, we cannot find the page you requested.
       </Typography>
       <Button variant="contained" color="primary" component={Link} to="/">
