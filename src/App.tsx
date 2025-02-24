@@ -17,7 +17,6 @@ function App() {
           <Route path="/create-product" element={<CreateProductForm />} />
           <Route path="/edit-product/:id" element={<EditProductForm />} />
           <Route path="/" element={<ProductList />} />
-          <Route path="*" element={<NotFound />} />
         </Routes>
       </Container>
     </Router>
