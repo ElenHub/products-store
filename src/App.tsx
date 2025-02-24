@@ -4,7 +4,6 @@ import ProductList from "./components/ProductList";
 import ProductDetails from "./components/ProductDetails";
 import CreateProductForm from "./components/CreateProductForm";
 import EditProductForm from "./components/EditProductForm";
-import NotFound from "./components/NotFound";
 
 function App() {
   return (
