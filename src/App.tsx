@@ -8,7 +8,7 @@ import NotFound from "./components/NotFound";
 
 function App() {
   return (
-    <Router basename="/products-store">
+    <Router>
       <Container maxWidth="lg">
         <Box sx={{ my: 4 }}></Box>
         <Routes>
