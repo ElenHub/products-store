@@ -95,16 +95,22 @@ const productSlice = createSlice({
   initialState,
   reducers: {
     addToCart(state, action: PayloadAction<Product>) {
-      const existingItem = state.cart.find((item) => item.id === action.payload.id);
+      const existingItem = state.cart.find(
+        (item) => item.id === action.payload.id
+      );
       if (existingItem) {
         existingItem.quantity += 1;
-        existingItem.totalPrice = existingItem.price * existingItem.quantity; 
+        existingItem.totalPrice = existingItem.price * existingItem.quantity;
       } else {
-        state.cart.push({ ...action.payload, quantity: 1, totalPrice: action.payload.price });
+        state.cart.push({
+          ...action.payload,
+          quantity: 1,
+          totalPrice: action.payload.price,
+        });
       }
     },
     removeFromCart(state, action: PayloadAction<number>) {
-      state.cart = state.cart.filter((item) => item.id !== action.payload); 
+      state.cart = state.cart.filter((item) => item.id !== action.payload);
     },
     updateCartItemQuantity(
       state,
@@ -113,15 +119,17 @@ const productSlice = createSlice({
       const item = state.cart.find((item) => item.id === action.payload.id);
       if (item) {
         item.quantity += action.payload.quantity;
-        item.totalPrice = item.price * item.quantity; 
+        item.totalPrice = item.price * item.quantity;
         if (item.quantity <= 0) {
-          state.cart = state.cart.filter((item) => item.id !== action.payload.id);
+          state.cart = state.cart.filter(
+            (item) => item.id !== action.payload.id
+          );
         }
       }
     },
 
     clearCart(state) {
-      state.cart = []; 
+      state.cart = [];
     },
     toggleLike(state, action: PayloadAction<number>) {
       const product = state.products.find((p) => p.id === action.payload);

@@ -50,7 +50,7 @@ const ProductDetails: React.FC = () => {
     <Container maxWidth="md">
       <Button
         onClick={() => navigate("/products")}
-        sx={{marginBottom:"40px", marginTop:"50px"}}
+        sx={{ marginBottom: "40px", marginTop: "50px" }}
         color="primary"
         type="submit"
         variant="contained"

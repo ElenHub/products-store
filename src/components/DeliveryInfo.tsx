@@ -1,10 +1,5 @@
-import React from 'react';
-import {
-  Box,
-  Typography,
-  TextField,
-  Button
-} from "@mui/material";
+import React from "react";
+import { Box, Typography, TextField, Button } from "@mui/material";
 
 interface DeliveryInfoProps {
   name: string;
@@ -16,8 +11,24 @@ interface DeliveryInfoProps {
   onCheckout: () => void;
 }
 
-const DeliveryInfo: React.FC<DeliveryInfoProps> = ({ name, setName, address, setAddress, contact, setContact, onCheckout }) => (
-  <Box sx={{ marginTop: 4, backgroundColor: '#f8f8f8', padding: 3, borderRadius: 2, boxShadow: 1 }}>
+const DeliveryInfo: React.FC<DeliveryInfoProps> = ({
+  name,
+  setName,
+  address,
+  setAddress,
+  contact,
+  setContact,
+  onCheckout,
+}) => (
+  <Box
+    sx={{
+      marginTop: 4,
+      backgroundColor: "#f8f8f8",
+      padding: 3,
+      borderRadius: 2,
+      boxShadow: 1,
+    }}
+  >
     <Typography variant="h5" gutterBottom>
       Delivery Information
     </Typography>
@@ -45,7 +56,12 @@ const DeliveryInfo: React.FC<DeliveryInfoProps> = ({ name, setName, address, set
       onChange={(e) => setContact(e.target.value)}
       sx={{ marginBottom: 2 }}
     />
-    <Button variant="contained" color="primary" onClick={onCheckout} sx={{ marginTop: 2 }}>
+    <Button
+      variant="contained"
+      color="primary"
+      onClick={onCheckout}
+      sx={{ marginTop: 2 }}
+    >
       Proceed to Payment
     </Button>
   </Box>

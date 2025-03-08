@@ -70,7 +70,7 @@ const ProductList: React.FC = () => {
     if (value === "all") {
       dispatch(setSelectedCategories([]));
     } else {
-      dispatch(setSelectedCategories([value])); 
+      dispatch(setSelectedCategories([value]));
     }
     dispatch(setCurrentPage(1));
   };
@@ -95,7 +95,13 @@ const ProductList: React.FC = () => {
 
   return (
     <Container maxWidth="lg">
-      <Typography variant="h4" component="h1" gutterBottom marginTop="80px" align="center">
+      <Typography
+        variant="h4"
+        component="h1"
+        gutterBottom
+        marginTop="80px"
+        align="center"
+      >
         Product List
       </Typography>
 
@@ -108,7 +114,7 @@ const ProductList: React.FC = () => {
           value={filter}
           onChange={handleFilterChange}
           label="Filter"
-          sx={{ bgcolor: 'background.paper' }}
+          sx={{ bgcolor: "background.paper" }}
         >
           <MenuItem value="all">All</MenuItem>
           <MenuItem value="liked">Liked</MenuItem>
@@ -126,7 +132,7 @@ const ProductList: React.FC = () => {
             selectedCategories.length === 0 ? "all" : selectedCategories[0]
           }
           label="Category"
-          sx={{ bgcolor: 'background.paper' }}
+          sx={{ bgcolor: "background.paper" }}
         >
           <MenuItem value="all">All</MenuItem>
           <MenuItem value="jewelery">Jewelry</MenuItem>
@@ -148,12 +154,17 @@ const ProductList: React.FC = () => {
         sx={{ m: 1, width: 300 }}
       />
 
-            {/* Link to create a new product */}
-            <Link to="/create-product">
-        <Button 
-          variant="contained" 
-          color="primary" 
-          sx={{ left:"20px", my: 2, boxShadow: 3, "&:hover": { boxShadow: 6 } }}
+      {/* Link to create a new product */}
+      <Link to="/create-product">
+        <Button
+          variant="contained"
+          color="primary"
+          sx={{
+            left: "20px",
+            my: 2,
+            boxShadow: 3,
+            "&:hover": { boxShadow: 6 },
+          }}
         >
           Create Product
         </Button>
@@ -171,13 +182,16 @@ const ProductList: React.FC = () => {
 
       <Grid container spacing={3} sx={{ marginTop: "30px" }}>
         {currentProducts.length === 0 ? (
-          <Typography variant="h6" color="textSecondary" sx={{ width: "100%", textAlign: "center" }}>
-            {filter === "liked" 
-              ? "No liked products found." 
+          <Typography
+            variant="h6"
+            color="textSecondary"
+            sx={{ width: "100%", textAlign: "center" }}
+          >
+            {filter === "liked"
+              ? "No liked products found."
               : selectedCategories.length > 0
-                ? `No products found in the category "${selectedCategories[0]}".` 
-                : "No products available."
-            }
+              ? `No products found in the category "${selectedCategories[0]}".`
+              : "No products available."}
           </Typography>
         ) : (
           currentProducts.map((product) => (
@@ -187,7 +201,6 @@ const ProductList: React.FC = () => {
           ))
         )}
       </Grid>
-
     </Container>
   );
 };

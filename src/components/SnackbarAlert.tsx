@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import { Snackbar, Alert } from "@mui/material";
 
 interface SnackbarAlertProps {
@@ -7,9 +7,13 @@ interface SnackbarAlertProps {
   message: string;
 }
 
-const SnackbarAlert: React.FC<SnackbarAlertProps> = ({ open, onClose, message }) => (
+const SnackbarAlert: React.FC<SnackbarAlertProps> = ({
+  open,
+  onClose,
+  message,
+}) => (
   <Snackbar open={open} autoHideDuration={6000} onClose={onClose}>
-    <Alert onClose={onClose} severity="info" sx={{ width: '100%' }}>
+    <Alert onClose={onClose} severity="info" sx={{ width: "100%" }}>
       {message}
     </Alert>
   </Snackbar>

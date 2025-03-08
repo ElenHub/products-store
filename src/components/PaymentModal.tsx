@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   Box,
   Typography,
@@ -6,7 +6,7 @@ import {
   Button,
   Modal,
   Fade,
-  Backdrop
+  Backdrop,
 } from "@mui/material";
 
 interface PaymentModalProps {
@@ -22,8 +22,15 @@ interface PaymentModalProps {
 }
 
 const PaymentModal: React.FC<PaymentModalProps> = ({
-  open, onClose, cardNumber, setCardNumber,
-  expiryDate, setExpiryDate, cvv, setCvv, onPay
+  open,
+  onClose,
+  cardNumber,
+  setCardNumber,
+  expiryDate,
+  setExpiryDate,
+  cvv,
+  setCvv,
+  onPay,
 }) => (
   <Modal
     open={open}
@@ -37,13 +44,13 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
     <Fade in={open}>
       <Box
         sx={{
-          bgcolor: '#fff',
+          bgcolor: "#fff",
           borderRadius: 2,
           boxShadow: 24,
           p: 4,
-          width: '400px',
-          margin: 'auto',
-          marginTop: '100px'
+          width: "400px",
+          margin: "auto",
+          marginTop: "100px",
         }}
       >
         <Typography variant="h5" gutterBottom>
@@ -73,7 +80,12 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
           onChange={(e) => setCvv(e.target.value)}
           sx={{ marginBottom: 2 }}
         />
-        <Button variant="contained" color="primary" onClick={onPay} sx={{ marginTop: 2 }}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={onPay}
+          sx={{ marginTop: 2 }}
+        >
           Pay
         </Button>
       </Box>

@@ -6,7 +6,6 @@ const saveToLocalStorage = (state) => {
   try {
     const serializedState = JSON.stringify({
       products: state.products.products,
-      // cart: state.cart,
       filteredProducts: state.products.filteredProducts,
       filter: state.products.filter,
       selectedCategories: state.products.selectedCategories,

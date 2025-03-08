@@ -31,14 +31,14 @@ const EditProductForm: React.FC = () => {
   // useEffect hook to load product data when the component mounts or when the product ID changes
   useEffect(() => {
     if (!id) return;
-    const foundProduct = products.find((p) => String(p.id) === (id));
+    const foundProduct = products.find((p) => String(p.id) === id);
     if (foundProduct) {
       setProduct(foundProduct);
       setTitle(foundProduct.title);
       setDescription(foundProduct.description);
       setCategory(foundProduct.category);
       setImage(foundProduct.image);
-      setPrice(foundProduct.price); 
+      setPrice(foundProduct.price);
       setError("");
     } else {
       setError("Product not found.");
@@ -51,7 +51,9 @@ const EditProductForm: React.FC = () => {
 
     // Validate the form data
     if (!title || !description || !image || !category || price <= 0) {
-      setError("Please fill in all fields and ensure price is greater than zero.");
+      setError(
+        "Please fill in all fields and ensure price is greater than zero."
+      );
       return;
     }
 
@@ -68,7 +70,7 @@ const EditProductForm: React.FC = () => {
       description,
       category,
       image,
-      price
+      price,
     };
 
     dispatch(editProductThunk(updatedProduct));
@@ -89,7 +91,7 @@ const EditProductForm: React.FC = () => {
     <Container maxWidth="sm">
       <Button
         onClick={() => navigate("/products")}
-       sx={{marginBottom:"40px", marginTop:"50px"}}
+        sx={{ marginBottom: "40px", marginTop: "50px" }}
         color="primary"
         type="submit"
         variant="contained"
@@ -122,17 +124,19 @@ const EditProductForm: React.FC = () => {
           onChange={(e) => setDescription(e.target.value)}
           required
         />
-             <TextField
+        <TextField
           label="Price"
           variant="outlined"
           fullWidth
           margin="normal"
-          type="number" 
-          value={price} 
-          onChange={(e) => setPrice(parseFloat(e.target.value))} 
+          type="number"
+          value={price}
+          onChange={(e) => setPrice(parseFloat(e.target.value))}
           required
           error={price <= 0 && error !== ""}
-          helperText={price <= 0 && error !== "" ? "Price must be greater than zero." : ""}
+          helperText={
+            price <= 0 && error !== "" ? "Price must be greater than zero." : ""
+          }
         />
         <TextField
           label="Image URL"
@@ -169,4 +173,3 @@ const EditProductForm: React.FC = () => {
 };
 
 export default EditProductForm;
-
