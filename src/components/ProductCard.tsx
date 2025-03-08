@@ -21,10 +21,10 @@ import { useAppDispatch } from "../hooks";
 import {
   toggleLike,
   deleteProductThunk,
-  addToCartThunk,
   addToCart,
 } from "../features/productSlice";
-import ConfirmationDialog from "./ConfiramtionDialog";
+import ConfirmationDialog from './ConfiramtionDialog'
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 
 interface ProductCardProps {
   product: Product;
@@ -35,41 +35,34 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const dispatch = useAppDispatch();
   const [openConfirmDelete, setOpenConfirmDelete] = useState(false);
 
-  // Function to navigate to the product details page
   const handleCardClick = () => {
     navigate(`/products/${product.id}`);
   };
 
-  // Function to toggle the like status of a product
   const handleLikeClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     dispatch(toggleLike(product.id));
   };
 
-  // Function to open the confirmation dialog for deleting a product
   const handleOpenConfirmDelete = (e: React.MouseEvent) => {
     e.stopPropagation();
     setOpenConfirmDelete(true);
   };
 
-  // Function to close the confirmation dialog
   const handleCloseConfirmDelete = () => {
     setOpenConfirmDelete(false);
   };
 
-  // Function to confirm the deletion of a product
   const handleDeleteConfirmed = () => {
     dispatch(deleteProductThunk(product.id));
     setOpenConfirmDelete(false);
   };
 
-  // Function to navigate to the edit product page
   const handleEditClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     navigate(`/edit-product/${product.id}`);
   };
 
-  // Function to handle adding product to cart
   const handleAddToCart = (e: React.MouseEvent) => {
     e.stopPropagation();
     dispatch(addToCart(product));
@@ -85,33 +78,37 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           display: "flex",
           flexDirection: "column",
           cursor: "pointer",
-          borderRadius: "20px",
+          borderRadius: "15px",
+          boxShadow: 3,
+          '&:hover': {
+            transition: 'transform 0.2s ease-in-out',
+            boxShadow: 6,
+          },
         }}
       >
         <CardMedia
           component="img"
           sx={{
-            width: "69%",
-            margin: "0 auto",
+            width: "100%",
             height: "261px",
             objectFit: "contain",
             marginBottom: "18px",
           }}
           image={product.image}
         />
-        <CardContent sx={{ flexGrow: 1 }}>
-          <Typography gutterBottom variant="h6" component="div">
+        <CardContent sx={{ flexGrow: 1}}>
+          <Typography gutterBottom variant="h6" component="div" sx={{ fontWeight: "bold", color: "#333" }}>
             {product.title}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            {truncateText(product.description, 100)}
           </Typography>
           <Typography
             variant="h6"
             color="text.primary"
-            sx={{ fontWeight: "bold" }}
+            sx={{ fontWeight: "bold", marginTop: "10px" }}
           >
             ${product.price}
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            {truncateText(product.description, 100)}
           </Typography>
         </CardContent>
         <CardActions
@@ -126,21 +123,26 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             )}
           </IconButton>
           <IconButton aria-label="delete" onClick={handleOpenConfirmDelete}>
-            <DeleteIcon />
+            <DeleteIcon color="error" />
           </IconButton>
           <Button
             variant="outlined"
             color="primary"
             startIcon={<AddIcon />}
             onClick={handleAddToCart}
+            sx={{ borderRadius: "20px",     display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              padding: '6px',  }}
           >
-            Add to cart
+             <ShoppingCartIcon /> 
           </Button>
           <Button
             variant="outlined"
             color="primary"
             startIcon={<EditIcon />}
             onClick={handleEditClick}
+            sx={{ borderRadius: "20px" }}
           >
             Edit
           </Button>
@@ -159,3 +161,5 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 };
 
 export default ProductCard;
+
+

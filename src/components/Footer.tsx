@@ -3,7 +3,7 @@ import { Container, Typography } from '@mui/material';
 
 const Footer: React.FC = () => {
     return (
-    <footer style={{ backgroundColor: '#f1f1f1', padding: '1rem 0', width: '100%' }}>
+    <footer style={{ backgroundColor: '#f1f1f1', padding: '1rem 0', width: '100%', marginTop:'50px'}}>
         <Container maxWidth="lg">
           <Typography variant="body1" align="center">
             © {new Date().getFullYear()} My Product Store
