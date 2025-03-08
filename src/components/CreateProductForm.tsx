@@ -14,12 +14,14 @@ import { useAppDispatch } from "../hooks";
 import { addProductThunk } from "../features/productSlice";
 import { Product } from "../types/types";
 import { useNavigate } from "react-router-dom";
+import { v4 as uuid } from "uuid";
 
 const CreateProductForm: React.FC = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
   const [image, setImage] = useState("");
+  const [price, setPrice] = useState(0);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -28,6 +30,11 @@ const CreateProductForm: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (price <= 0) {
+      setError("Price must be greater than zero.");
+      return;
+    }
 
     if (
       !title.trim() ||
@@ -44,11 +51,12 @@ const CreateProductForm: React.FC = () => {
 
     try {
       const newProduct: Product = {
-        id: Date.now(),
+        id: uuid(),
         title,
         description,
         category,
         image,
+        price,
         isLiked: false,
       };
       await dispatch(addProductThunk(newProduct));
@@ -64,7 +72,7 @@ const CreateProductForm: React.FC = () => {
     <Container maxWidth="sm">
       <Button
         onClick={() => navigate("/products")}
-        sx={{ marginBottom: "30px" }}
+        sx={{ marginBottom: "40px", marginTop: "50px" }}
         color="primary"
         type="submit"
         variant="contained"
@@ -105,6 +113,21 @@ const CreateProductForm: React.FC = () => {
           }
         />
         <TextField
+          label="Price"
+          variant="outlined"
+          fullWidth
+          margin="normal"
+          type="number"
+          value={price || ""}
+          onChange={(e) => setPrice(parseFloat(e.target.value) || 0)}
+          required
+          error={price <= 0 && error !== ""}
+          helperText={
+            price <= 0 && error !== "" ? "Price must be a positive number." : ""
+          }
+        />
+
+        <TextField
           label="Image (URL)"
           variant="outlined"
           fullWidth
@@ -131,6 +154,7 @@ const CreateProductForm: React.FC = () => {
             <MenuItem value="">Select a category</MenuItem>
             <MenuItem value="jewelery">Jewelery</MenuItem>
             <MenuItem value="men's clothing">Men's Clothing</MenuItem>
+            <MenuItem value="women's clothing">Women's Clothing</MenuItem>
             <MenuItem value="electronics">Electronics</MenuItem>
           </Select>
         </FormControl>

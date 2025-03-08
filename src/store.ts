@@ -6,6 +6,7 @@ const saveToLocalStorage = (state) => {
   try {
     const serializedState = JSON.stringify({
       products: state.products.products,
+      // cart: state.cart,
       filteredProducts: state.products.filteredProducts,
       filter: state.products.filter,
       selectedCategories: state.products.selectedCategories,
@@ -33,6 +34,7 @@ const loadFromLocalStorage = () => {
       products: {
         products: parsedState.products || [],
         filteredProducts: parsedState.filteredProducts || [],
+        cart: parsedState.cart || [],
         filter: parsedState.filter || "all",
         selectedCategories: parsedState.selectedCategories || [],
         searchTerm: parsedState.searchTerm || "",

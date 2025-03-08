@@ -68,9 +68,9 @@ const ProductList: React.FC = () => {
   const handleCategoryChange = (event: SelectChangeEvent<string>) => {
     const value = event.target.value;
     if (value === "all") {
-      dispatch(setSelectedCategories([])); // Clear selected categories if "All" is selected
+      dispatch(setSelectedCategories([]));
     } else {
-      dispatch(setSelectedCategories([value])); // Set selected category
+      dispatch(setSelectedCategories([value])); 
     }
     dispatch(setCurrentPage(1));
   };
@@ -95,7 +95,7 @@ const ProductList: React.FC = () => {
 
   return (
     <Container maxWidth="lg">
-      <Typography variant="h4" component="h1" gutterBottom>
+      <Typography variant="h4" component="h1" gutterBottom marginTop="80px" align="center">
         Product List
       </Typography>
 
@@ -108,6 +108,7 @@ const ProductList: React.FC = () => {
           value={filter}
           onChange={handleFilterChange}
           label="Filter"
+          sx={{ bgcolor: 'background.paper' }}
         >
           <MenuItem value="all">All</MenuItem>
           <MenuItem value="liked">Liked</MenuItem>
@@ -125,10 +126,12 @@ const ProductList: React.FC = () => {
             selectedCategories.length === 0 ? "all" : selectedCategories[0]
           }
           label="Category"
+          sx={{ bgcolor: 'background.paper' }}
         >
           <MenuItem value="all">All</MenuItem>
           <MenuItem value="jewelery">Jewelry</MenuItem>
           <MenuItem value="men's clothing">Men's Clothing</MenuItem>
+          <MenuItem value="women's clothing">Women's Clothing</MenuItem>
           <MenuItem value="electronics">Electronics</MenuItem>
         </Select>
       </FormControl>
@@ -144,6 +147,27 @@ const ProductList: React.FC = () => {
         }}
         sx={{ m: 1, width: 300 }}
       />
+
+            {/* Link to create a new product */}
+            <Link to="/create-product">
+        <Button 
+          variant="contained" 
+          color="primary" 
+          sx={{ left:"20px", my: 2, boxShadow: 3, "&:hover": { boxShadow: 6 } }}
+        >
+          Create Product
+        </Button>
+      </Link>
+
+      {/* Pagination for product list */}
+      {totalPages > 1 && (
+        <Pagination
+          count={totalPages}
+          page={currentPage}
+          onChange={(e, value) => dispatch(setCurrentPage(value))}
+          sx={{ mt: 2, display: "flex", justifyContent: "center" }}
+        />
+      )}
 
       <Grid container spacing={3} sx={{ marginTop: "30px" }}>
         {currentProducts.length === 0 ? (
@@ -164,22 +188,6 @@ const ProductList: React.FC = () => {
         )}
       </Grid>
 
-      {/* Pagination for product list */}
-      {totalPages > 1 && (
-        <Pagination
-          count={totalPages}
-          page={currentPage}
-          onChange={(e, value) => dispatch(setCurrentPage(value))}
-          sx={{ mt: 2, display: "flex", justifyContent: "center" }}
-        />
-      )}
-
-      {/* Link to create a new product */}
-      <Link to="/create-product">
-        <Button variant="outlined" color="primary" sx={{ marginTop: "30px" }}>
-          Create Product
-        </Button>
-      </Link>
     </Container>
   );
 };

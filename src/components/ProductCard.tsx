@@ -11,13 +11,19 @@ import {
 import { Link } from "react-router-dom";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import { useNavigate } from "react-router-dom";
 import { Product } from "../types/types";
 import { truncateText } from "../utils/truncateText";
 import { useAppDispatch } from "../hooks";
-import { toggleLike, deleteProductThunk } from "../features/productSlice";
+import {
+  toggleLike,
+  deleteProductThunk,
+  addToCartThunk,
+  addToCart,
+} from "../features/productSlice";
 import ConfirmationDialog from "./ConfiramtionDialog";
 
 interface ProductCardProps {
@@ -63,6 +69,13 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     navigate(`/edit-product/${product.id}`);
   };
 
+  // Function to handle adding product to cart
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    dispatch(addToCart(product));
+    navigate(`/cart`);
+  };
+
   return (
     <>
       <Card
@@ -72,6 +85,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           display: "flex",
           flexDirection: "column",
           cursor: "pointer",
+          borderRadius: "20px",
         }}
       >
         <CardMedia
@@ -88,6 +102,13 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         <CardContent sx={{ flexGrow: 1 }}>
           <Typography gutterBottom variant="h6" component="div">
             {product.title}
+          </Typography>
+          <Typography
+            variant="h6"
+            color="text.primary"
+            sx={{ fontWeight: "bold" }}
+          >
+            ${product.price}
           </Typography>
           <Typography variant="body2" color="text.secondary">
             {truncateText(product.description, 100)}
@@ -107,6 +128,14 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           <IconButton aria-label="delete" onClick={handleOpenConfirmDelete}>
             <DeleteIcon />
           </IconButton>
+          <Button
+            variant="outlined"
+            color="primary"
+            startIcon={<AddIcon />}
+            onClick={handleAddToCart}
+          >
+            Add to cart
+          </Button>
           <Button
             variant="outlined"
             color="primary"

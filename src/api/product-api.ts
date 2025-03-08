@@ -1,5 +1,6 @@
 import axios from "axios";
-import { Product } from "../types/types";
+import { CartItem, Product } from "../types/types";
+import { v4 as uuid } from "uuid";
 
 export const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -11,10 +12,20 @@ const handleApiError = (error: any, message: string) => {
 // Function to fetch all products from the API
 export const fetchProducts = async () => {
   try {
-    const response = await axios.get(`${apiUrl}?limit=10`);
+    const response = await axios.get(`${apiUrl}?limit=18`);
     return response.data;
   } catch (error) {
     handleApiError(error, "Failed to fetch products.");
+  }
+};
+
+// Function to add a cart to the API
+export const addToCart = async (cartItem: CartItem) => {
+  try {
+    const response = await axios.get(`${apiUrl}/carts`, cartItem);
+    return response.data;
+  } catch (error) {
+    handleApiError(error, "Could not add to cart.");
   }
 };
 
@@ -24,9 +35,9 @@ export const addProduct = async (newProduct: Product) => {
     const response = await axios.post(`${apiUrl}`, newProduct);
     const modifiedProduct = {
       ...response.data,
-      id: Date.now()
+      id: Date.now(),
     };
-    return modifiedProduct; 
+    return modifiedProduct;
   } catch (error) {
     handleApiError(error, "Could not add product.");
   }
